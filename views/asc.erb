@@ -1,7 +1,9 @@
 <div class="row">
     <div class="col-sm-9">
         <h1><%= @asc[:asc_name] %></h1>
-        <p><%= @asc[:beds] %></p>
+        <p>Beds: <%= @asc[:beds] %></p>
+        <p>Ownership Status: <%= @asc[:ownership] %></p>
+        <p>Single or Multi Specialty:<%= @asc[:specialty_type] %></p>
 
         <% for rating in @ratings %>    
         <div class="media">
@@ -10,30 +12,27 @@
                         <%= @users_table.where(id: rating[:user_id]).to_a[0][:name] %>
 
                         <small>
-                            <!-- only show these links if it's my rsvp -->
-                            <% if @current_user && @current_user[:id] == rsvp[:user_id] %>
-                                (<a href="/rsvps/<%= rsvp[:id] %>/edit">edit</a> | <a href="/rsvps/<%= rsvp[:id] %>/destroy">delete</a>)
+                            <!-- only show these links if it's my rating -->
+                            <% if @current_user && @current_user[:id] == rating[:user_id] %>
+                                (<a href="/ratings/<%= rating[:id] %>/edit">edit</a> | <a href="/ratinfs/<%= rating[:id] %>/destroy">delete</a>)
                             <% end %>
                         </small>
                     </h5>
-                    <%= rsvp[:comments] %>
+                    <%= rating[:comments] %>
                 </div>
             </div>
         <% end %>
         <p class="mt-5">
             <% if @current_user %>
-                <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP now!</a>
+                <a href="/ascs/<%= @asc[:id] %>/ratings/new" class="btn btn-primary">Rate now!</a>
             <% else %>
-                <a href="/logins/new" class="btn btn-danger">Please sign in to RSVP</a>
+                <a href="/logins/new" class="btn btn-danger">Please sign in to rate</a>
             <% end %>
         </p>
     </div>
     <div class="col-sm-3">
-        <h3>When?</h3>
-        <p><%= @event[:date] %></p>
-        <h3>Where?</h3>
-        <p><%= @event[:location] %></p>
-        <h3>How many guests so far?</h3>
-        <p><%= @going_count %></p>
+        <p><%= @asc[:state] %></p>
+        <h3>How many ratings so far?</h3>
+        <p><%= @rating_count %></p>
     </div>
 </div>
