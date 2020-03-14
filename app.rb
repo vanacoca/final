@@ -14,5 +14,160 @@ before { puts; puts "--------------- NEW REQUEST ---------------"; puts }       
 after { puts; }                                                                       #
 #######################################################################################
 
-events_table = DB.from(:events)
-rsvps_table = DB.from(:rsvps)
+ascs_table = DB.from(:ascs)
+ratings_table = DB.from(:ratings)
+users_table = DB.from(:users)
+
+before do
+     @current_user = users_table.where(id: session["user_id"]).to_a[0]
+end
+
+# homepage and list of ascs (aka "index")
+get "/" do
+    puts "params: #{params}"
+
+    @ascs = events_table.all.to_a
+    pp @ascs
+
+    view "ascs"
+end
+
+# asc details (aka "show")
+get "/ascs/:id" do
+    puts "params: #{params}"
+
+    @users_table = users_table
+    @asc = ascs_table.where(id: params[:id]).to_a[0]
+    pp @asc
+
+    @ratings = ratings_table.where(asc_id: @asc[:id]).to_a
+    @rating_count = rsvps_table.where(asc_id: @asc[:id]).count
+
+    view "asc"
+end
+
+# display the rating form (aka "new")
+get "/ascs/:id/ratings/new" do
+    puts "params: #{params}"
+
+    @asc = ascs_table.where(id: params[:id]).to_a[0]
+    view "new_rating"
+end
+
+# receive the submitted rating form (aka "create")
+post "/ascsc/:id/ratings/create" do
+    puts "params: #{params}"
+
+    # first find the asc that we are rating for
+    @asc = ascs_table.where(id: params[:id]).to_a[0]
+    # next we want to insert a row in the ratings table with the rating form data
+    ratings_table.insert(
+        asc_id: @asc[:id],
+        user_id: session["user_id"],
+        comments: params["comments"],
+        rating: params[:rating]
+    )
+
+    redirect "/ascs/#{@asc[:id]}"
+end
+
+# display the rating form (aka "edit")
+get "/rsvps/:id/edit" do
+    puts "params: #{params}"
+
+    @rating = ratings_table.where(id: params["id"]).to_a[0]
+    @asc = ascs_table.where(id: @rsvp[:asc_id]).to_a[0]
+    view "edit_rating"
+end
+
+# receive the submitted rating form (aka "update")
+post "/ratings/:id/update" do
+    puts "params: #{params}"
+
+    # find the rating to update
+    @rating = ratings_table.where(id: params["id"]).to_a[0]
+    # find the rating's asc
+    @asc = ascs_table.where(id: @rating[:asc_id]).to_a[0]
+
+    if @current_user && @current_user[:id] == @rating[:id]
+        ratings_table.where(id: params["id"]).update(
+            rating: params[:rating],
+            comments: params["comments"]
+        )
+
+        redirect "/ascs/#{@asc[:id]}"
+    else
+        view "error"
+    end
+end
+
+# delete the rating (aka "destroy")
+get "/ratings/:id/destroy" do
+    puts "params: #{params}"
+
+    rating = ratings_table.where(id: params["id"]).to_a[0]
+    @asc = ascs_table.where(id: rsvp[:asc_id]).to_a[0]
+
+    ratings_table.where(id: params["id"]).delete
+
+    redirect "/ascs/#{@asc[:id]}"
+end
+
+# display the signup form (aka "new")
+get "/users/new" do
+    view "new_user"
+end
+
+# receive the submitted signup form (aka "create")
+post "/users/create" do
+    puts "params: #{params}"
+
+    # if there's already a user with this email, skip!
+    existing_user = users_table.where(email: params["email"]).to_a[0]
+    if existing_user
+        view "error"
+    else
+        users_table.insert(
+            name: params["name"],
+            email: params["email"],
+            password: BCrypt::Password.create(params["password"])
+        )
+
+        redirect "/logins/new"
+    end
+end
+
+# display the login form (aka "new")
+get "/logins/new" do
+    view "new_login"
+end
+
+# receive the submitted login form (aka "create")
+post "/logins/create" do
+    puts "params: #{params}"
+
+    # step 1: user with the params["email"] ?
+    @user = users_table.where(email: params["email"]).to_a[0]
+
+    if @user
+        # step 2: if @user, does the encrypted password match?
+        if BCrypt::Password.new(@user[:password]) == params["password"]
+            # set encrypted cookie for logged in user
+            session["user_id"] = @user[:id]
+            redirect "/"
+        else
+            view "create_login_failed"
+        end
+    else
+        view "create_login_failed"
+    end
+end
+
+# logout user
+get "/logout" do
+    # remove encrypted cookie for logged out user
+    session["user_id"] = nil
+    redirect "/logins/new"
+end
+
+

@@ -5,31 +5,46 @@ DB = Sequel.connect(connection_string)                                          
 #######################################################################################
 
 # Database schema - this should reflect your domain model
-DB.create_table! :events do
+DB.create_table! :ascs do
   primary_key :id
-  String :title
-  String :description, text: true
-  String :date
-  String :location
+  String :asc_name
+  Integer :beds
+  String :specialty_type
+  String :ownership
+  String :state
 end
-DB.create_table! :rsvps do
+DB.create_table! :ratings do
   primary_key :id
-  foreign_key :event_id
-  Boolean :going
-  String :name
-  String :email
+  foreign_key :asc_id
+  foreign_key :user_id
+  Integer :rating
   String :comments, text: true
 end
 
+DB.create_table! :users do
+  primary_key :id
+  String :name
+  String :email
+  String :password
+end
+
 # Insert initial (seed) data
-events_table = DB.from(:events)
+ascs_table = DB.from(:ascs)
 
-events_table.insert(title: "Bacon Burger Taco Fest", 
-                    description: "Here we go again bacon burger taco fans, another Bacon Burger Taco Fest is here!",
-                    date: "June 21",
-                    location: "Kellogg Global Hub")
+ascs_table.insert(asc_name: "North Central Surgery Center", 
+                    beds: 100,
+                    specialty_type: "Single",
+                    ownership: "Hospital-owned",
+                    state: "Illinois")
 
-events_table.insert(title: "Kaleapolooza", 
-                    description: "If you're into nutrition and vitamins and stuff, this is the event for you.",
-                    date: "July 4",
-                    location: "Nowhere")
+ascs_table.insert(asc_name: "St. James Outpatient Surgery Center", 
+                    beds: 50,
+                    specialty_type: "Multi",
+                    ownership: "Affiliated",
+                    state: "Illinois")
+
+ascs_table.insert(asc_name: "Maple Grove Outpatient Surgery Center", 
+                    beds: 40,
+                    specialty_type: "Multi",
+                    ownership: "Independent",
+                    state: "Indiana")
