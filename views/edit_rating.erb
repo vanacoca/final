@@ -7,11 +7,17 @@
     <select class="form-control" name="rating">
     #put the dropdown in
       <% if @rating[:rating] %>
-        <option value="1" selected>Yes</option>
-        <option value="0">No</option>
+             <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
       <% else %>
-        <option value="1">Yes</option>
-        <option value="0" selected>No</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
       <% end %>
     </select>
   </div>

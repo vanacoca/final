@@ -14,7 +14,7 @@
                         <small>
                             <!-- only show these links if it's my rating -->
                             <% if @current_user && @current_user[:id] == rating[:user_id] %>
-                                (<a href="/ratings/<%= rating[:id] %>/edit">edit</a> | <a href="/ratinfs/<%= rating[:id] %>/destroy">delete</a>)
+                                (<a href="/ratings/<%= rating[:id] %>/edit">edit rating</a>)
                             <% end %>
                         </small>
                     </h5>

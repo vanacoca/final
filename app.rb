@@ -2,7 +2,8 @@
 require "sinatra"                                                                     #
 require "sinatra/reloader" if development?                                            #
 require "sequel"                                                                      #
-require "logger"                                                                      #
+require "logger"    
+require "geocoder"                                                                  #
 require "twilio-ruby"                                                                 #
 require "bcrypt"                                                                      #
 connection_string = ENV['DATABASE_URL'] || "sqlite://#{Dir.pwd}/development.sqlite3"  #
@@ -14,6 +15,11 @@ before { puts; puts "--------------- NEW REQUEST ---------------"; puts }       
 after { puts; }                                                                       #
 #######################################################################################
 
+account_sid = ENV["TWILIO_ACCOUNT_SID"]
+auth_token = ENV["TWILIO_AUTH_TOKEN"]
+
+client = Twilio::REST::Client.new(account_sid, auth_token)
+
 ascs_table = DB.from(:ascs)
 ratings_table = DB.from(:ratings)
 users_table = DB.from(:users)
@@ -21,6 +27,11 @@ users_table = DB.from(:users)
 before do
      @current_user = users_table.where(id: session["user_id"]).to_a[0]
 end
+
+    # #enter parameters and get latlong
+    # @results = Geocoder.search(params["q"])
+    # @location = params["q"]
+    # pp @ results
 
 # homepage and list of ascs (aka "index")
 get "/" do
@@ -101,18 +112,6 @@ post "/ratings/:id/update" do
     end
 end
 
-# delete the rating (aka "destroy")
-get "/ratings/:id/destroy" do
-    puts "params: #{params}"
-
-    @rating = ratings_table.where(id: params["id"]).to_a[0]
-    @asc = ascs_table.where(id: @rating[:asc_id]).to_a[0]
-
-    ratings_table.where(id: params["id"]).delete
-
-    redirect "/ascs/#{@asc[:id]}"
-end
-
 # display the signup form (aka "new")
 get "/users/new" do
     view "new_user"
@@ -132,7 +131,11 @@ post "/users/create" do
             email: params["email"],
             password: BCrypt::Password.create(params["password"])
         )
-
+            client.messages.create(
+            from: "+14243257958", 
+            to: "+12017230422",
+            body: "Thank you for signing up for ASC Ratings"
+            )
         redirect "/logins/new"
     end
 end
