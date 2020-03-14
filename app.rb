@@ -26,7 +26,7 @@ end
 get "/" do
     puts "params: #{params}"
 
-    @ascs = events_table.all.to_a
+    @ascs = ascs_table.all.to_a
     pp @ascs
 
     view "ascs"
@@ -41,7 +41,7 @@ get "/ascs/:id" do
     pp @asc
 
     @ratings = ratings_table.where(asc_id: @asc[:id]).to_a
-    @rating_count = rsvps_table.where(asc_id: @asc[:id]).count
+    @rating_count = ratings_table.where(asc_id: @asc[:id]).count
 
     view "asc"
 end

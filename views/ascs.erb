@@ -1,0 +1,5 @@
+<h1>All ASCs</h1>
+
+<% for asc in @ascs %>
+    <p><a href="/ascs/<%= asc[:id] %>"><%= asc[:asc_name] %></a></p>
+<% end %>
