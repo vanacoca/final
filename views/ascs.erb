@@ -1,4 +1,9 @@
-<h1>All ASCs</h1>
+<div class="jumbotron" style="background-image: url(https://www.mdinterconnect.com/wp-content/uploads/2019/02/iStock-1023224308s.jpg); background-size: cover;">
+  <h1 class="display-4">ASC Ratings</h1>
+  <h2> <p class="lead">The best resource on ambulatory surgery center quality</p> </h2>
+  <hr class="my-4">
+</div>
+<p><h2>Click on an ASC below to see their ratings, and to enter your own:</h2></p>
 
 <% for asc in @ascs %>
     <p><a href="/ascs/<%= asc[:id] %>"><%= asc[:asc_name] %></a></p>

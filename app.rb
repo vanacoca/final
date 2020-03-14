@@ -55,7 +55,7 @@ get "/ascs/:id/ratings/new" do
 end
 
 # receive the submitted rating form (aka "create")
-post "/ascsc/:id/ratings/create" do
+post "/ascs/:id/ratings/create" do
     puts "params: #{params}"
 
     # first find the asc that we are rating for
@@ -72,11 +72,11 @@ post "/ascsc/:id/ratings/create" do
 end
 
 # display the rating form (aka "edit")
-get "/rsvps/:id/edit" do
+get "/ratings/:id/edit" do
     puts "params: #{params}"
 
     @rating = ratings_table.where(id: params["id"]).to_a[0]
-    @asc = ascs_table.where(id: @rsvp[:asc_id]).to_a[0]
+    @asc = ascs_table.where(id: @rating[:asc_id]).to_a[0]
     view "edit_rating"
 end
 
@@ -105,8 +105,8 @@ end
 get "/ratings/:id/destroy" do
     puts "params: #{params}"
 
-    rating = ratings_table.where(id: params["id"]).to_a[0]
-    @asc = ascs_table.where(id: rsvp[:asc_id]).to_a[0]
+    @rating = ratings_table.where(id: params["id"]).to_a[0]
+    @asc = ascs_table.where(id: @rating[:asc_id]).to_a[0]
 
     ratings_table.where(id: params["id"]).delete
 
