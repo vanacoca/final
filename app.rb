@@ -53,6 +53,7 @@ get "/ascs/:id" do
 
     @ratings = ratings_table.where(asc_id: @asc[:id]).to_a
     @rating_count = ratings_table.where(asc_id: @asc[:id]).count
+    # @rating_average = ratings_table.where(asc_id: @asc[:id], @ratings).average
 
     view "asc"
 end
@@ -129,12 +130,13 @@ post "/users/create" do
         users_table.insert(
             name: params["name"],
             email: params["email"],
+            phone_number: params["phone_number"],
             password: BCrypt::Password.create(params["password"])
         )
             client.messages.create(
             from: "+14243257958", 
             to: "+12017230422",
-            body: "Thank you for signing up for ASC Ratings"
+            body: "Admin Notification: A new account has been created on ASC ratings"
             )
         redirect "/logins/new"
     end

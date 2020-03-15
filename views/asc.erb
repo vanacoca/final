@@ -3,7 +3,7 @@
         <h1><%= @asc[:asc_name] %></h1>
         <p>Beds: <%= @asc[:beds] %></p>
         <p>Ownership Status: <%= @asc[:ownership] %></p>
-        <p>Single or Multi Specialty:<%= @asc[:specialty_type] %></p>
+        <p>Single or Multi Specialty: <%= @asc[:specialty_type] %></p>
 
         <% for rating in @ratings %>    
         <div class="media">
@@ -31,7 +31,6 @@
         </p>
     </div>
     <div class="col-sm-3">
-        <p><%= @asc[:state] %></p>
         <h3>How many ratings so far?</h3>
         <p><%= @rating_count %></p>
     </div>
