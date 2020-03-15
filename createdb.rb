@@ -10,7 +10,6 @@ DB.create_table! :ascs do
   String :asc_name
   String :specialty_type
   String :ownership
-  String :state
   String :address
 end
 DB.create_table! :ratings do
