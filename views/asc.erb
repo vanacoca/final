@@ -1,9 +1,10 @@
 <div class="row">
     <div class="col-sm-9">
         <h1><%= @asc[:asc_name] %></h1>
-        <p>Beds: <%= @asc[:beds] %></p>
         <p>Ownership Status: <%= @asc[:ownership] %></p>
         <p>Single or Multi Specialty: <%= @asc[:specialty_type] %></p>
+        <h3>How many ratings so far?</h3>
+        <p><%= @rating_count %></p>
 
         <% for rating in @ratings %>    
         <div class="media">
@@ -18,6 +19,7 @@
                             <% end %>
                         </small>
                     </h5>
+                    <p> Rating: <%= rating[:rating] %> / 5 <p/>
                     <%= rating[:comments] %>
                 </div>
             </div>
@@ -26,12 +28,20 @@
             <% if @current_user %>
                 <a href="/ascs/<%= @asc[:id] %>/ratings/new" class="btn btn-primary">Rate now!</a>
             <% else %>
-                <a href="/logins/new" class="btn btn-danger">Please sign in to rate</a>
+                <a href="/logins/new" class="btn btn-primary">Please sign in to rate</a>
             <% end %>
         </p>
     </div>
     <div class="col-sm-3">
-        <h3>How many ratings so far?</h3>
-        <p><%= @rating_count %></p>
+     <iframe
+        width="300"
+        height="250"
+        frameborder="0" style="border:0"
+        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCtovsQvkIUWlNqtYwXY87gEd4ZSmJEhMw
+          &q= <%=@lat_long %>&zoom=6" allowfullscreen>
+      </iframe>
+    <p><%= @asc[:asc_name]%> Location: </p>  
+    <%= @asc[:address] %>
+        
     </div>
 </div>

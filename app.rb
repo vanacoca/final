@@ -28,10 +28,6 @@ before do
      @current_user = users_table.where(id: session["user_id"]).to_a[0]
 end
 
-    # #enter parameters and get latlong
-    # @results = Geocoder.search(params["q"])
-    # @location = params["q"]
-    # pp @ results
 
 # homepage and list of ascs (aka "index")
 get "/" do
@@ -51,10 +47,12 @@ get "/ascs/:id" do
     @asc = ascs_table.where(id: params[:id]).to_a[0]
     pp @asc
 
+    @results = Geocoder.search(@asc[:address])
+    location = @results.first.coordinates # => [lat, long]
+    @lat_long = "#{location[0]},#{location[1]}"
+
     @ratings = ratings_table.where(asc_id: @asc[:id]).to_a
     @rating_count = ratings_table.where(asc_id: @asc[:id]).count
-    # @rating_average = ratings_table.where(asc_id: @asc[:id], @ratings).average
-
     view "asc"
 end
 
@@ -130,7 +128,6 @@ post "/users/create" do
         users_table.insert(
             name: params["name"],
             email: params["email"],
-            phone_number: params["phone_number"],
             password: BCrypt::Password.create(params["password"])
         )
             client.messages.create(

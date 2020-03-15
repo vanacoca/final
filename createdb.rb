@@ -8,10 +8,10 @@ DB = Sequel.connect(connection_string)                                          
 DB.create_table! :ascs do
   primary_key :id
   String :asc_name
-  Integer :beds
   String :specialty_type
   String :ownership
   String :state
+  String :address
 end
 DB.create_table! :ratings do
   primary_key :id
@@ -31,20 +31,17 @@ end
 # Insert initial (seed) data
 ascs_table = DB.from(:ascs)
 
-ascs_table.insert(asc_name: "North Central Surgery Center", 
-                    beds: 100,
+ascs_table.insert(asc_name: "UI Health Outpatient Surgery Center", 
                     specialty_type: "Single",
-                    ownership: "Hospital-owned",
-                    state: "Illinois")
+                    ownership: "Hospital-Owned",
+                    address: "1801 W Taylor St, Chicago, IL 60612")
 
-ascs_table.insert(asc_name: "St. James Outpatient Surgery Center", 
-                    beds: 50,
+ascs_table.insert(asc_name: "Northwestern Medicine Ambulatory Surgery Center", 
                     specialty_type: "Multi",
-                    ownership: "Affiliated",
-                    state: "Illinois")
+                    ownership: "Hospital-Owned",
+                    address: "710 N Fairbanks Ct, Chicago, IL 60611")
 
-ascs_table.insert(asc_name: "Maple Grove Outpatient Surgery Center", 
-                    beds: 40,
+ascs_table.insert(asc_name: "Valley Ambulatory Surgery Center", 
                     specialty_type: "Multi",
                     ownership: "Independent",
-                    state: "Indiana")
+                    address: "2475 Dean St, St. Charles, IL 60175")
